@@ -1,6 +1,16 @@
 import pandas as pd
+import re
+import json
 
 pd.options.mode.copy_on_write = True
+
+def clean_names(name:str):
+    name = re.findall(r'(\w*)',name)[0]
+    with open('utils/sample.json') as f:
+        file = json.load(f)
+        if name in file.keys():
+            name = file[name]
+    return name
 
 def keep_essential(df:pd.DataFrame) -> pd.DataFrame:
     df = df[["Name", "Paid at", "Financial Status", "Billing Country",  "Total", "Tax 1 Value", "Lineitem name", "Lineitem quantity", "Refunded Amount"]]
@@ -9,6 +19,7 @@ def keep_essential(df:pd.DataFrame) -> pd.DataFrame:
     df = df.ffill()
     df["Price w/o Tax"] = df["Total"] - df["Tax 1 Value"]
     df["Paid at"] = df["Paid at"].map(lambda x:x[:10])
+    df['Lineitem name'] = df["Lineitem name"].map(clean_names)
     return df
 
 def split_months(df:pd.DataFrame) -> dict:

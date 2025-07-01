@@ -1,9 +1,9 @@
 import pandas as pd
 
 def monthly_summary(monthly_df:pd.DataFrame) -> dict:
-    paid = monthly_df[monthly_df['Financial Status']=='paid']
+    # paid = monthly_df[monthly_df['Financial Status']=='paid']
 
-    summary_df = paid.groupby("Billing Country").agg(
+    summary_df = monthly_df.groupby("Billing Country").agg(
         count = ("Name", 'nunique'),
         total_HTVA = ("Price w/o Tax", 'sum'),
         total_TVA  = ("Tax 1 Value", 'sum'),

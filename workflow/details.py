@@ -31,6 +31,7 @@ def paid_table(df:pd.DataFrame):
         df=df[['date', 'prix_HTVA', 'TVA','total','number', 'desc']]
     else:
         df=df[['date','total','number','desc']]
+    df.loc['Total'] = df.sum(numeric_only=True)
     return df
 
 def refund_table(df:pd.DataFrame):
@@ -40,7 +41,11 @@ def refund_table(df:pd.DataFrame):
         df=df[['prix_HTVA', 'TVA','total','refunded', 'tax_credit']]
     else:
         df=df[['total','refunded']]
-
-    if df.empty == True:
-        df.loc['###'] = 0
+    df.loc['Total'] = df.sum(numeric_only=True)
     return df
+
+def split_refunds(df:pd.DataFrame):
+    refund_dfs = {}
+    refund_dfs['paid'] = paid_table(df)
+    refund_dfs['refunds'] = refund_table(df)
+    return refund_dfs
